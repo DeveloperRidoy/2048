@@ -1,5 +1,6 @@
 import Cell from "./Cell.js";
-import { bestScoreElement, BEST_SCORE, CELL_GAP, CELL_SIZE, gameBoard, GRID_SIZE, scoreElement } from "./config.js";
+import Tile from "./Tile.js";
+import { bestScoreElement, BEST_SCORE, CELL_GAP, CELL_SIZE, gameBoard, GRID_SIZE, scoreElement } from "./utils/config.js";
 
 
 export default class Grid {
@@ -23,7 +24,7 @@ export default class Grid {
 
   updateScore (value) {
     // current score
-    this.#score += value;
+    this.#score = value;
     scoreElement.innerText = this.#score;
     
     // best score 
@@ -65,19 +66,23 @@ export default class Grid {
   };
 
   reset () {
-    // remove all tiles from cell and the DOM  
-    this.#cells.forEach(cell => {
-      if (cell.tile == null && cell.mergeTile == null) return;
+    // remove all tiles from cell and the DOM
+    this.#cells.forEach((cell) => {
       if (cell.tile) {
-        cell.tile.removeFromDom(); 
+        cell.tile.removeFromDom();
         cell.tile = null;
       }
       if (cell.mergeTile) {
         cell.mergeTile.removeFromDom();
         cell.mergeTile = null;
       }
-    })
-    
+    });
+    // generate random two new tiles
+    this.randomEmptyCell().tile = new Tile();
+    this.randomEmptyCell().tile = new Tile();
+
+    // reset score 
+    this.updateScore(0)
   }
 }
 

@@ -1,5 +1,7 @@
 import Grid from "./Grid.js";
 import Tile from "./Tile.js";
+import calcSwipeDirection from "./utils/calcSwipeDirection.js";
+import { DOWN, LEFT, resetBtn, RIGHT, UP } from "./utils/config.js";
 
 const grid = new Grid();
 
@@ -7,27 +9,82 @@ const grid = new Grid();
 grid.randomEmptyCell().tile = new Tile();
 grid.randomEmptyCell().tile = new Tile();
 
+
+// restart game on clicking restart button
+resetBtn.addEventListener('click', () => {
+  grid.reset();
+});
+
 // user input 
 setupInput();
 function setupInput () {
+
   document.addEventListener("keydown", handleInput, { once: true });
+  // document.addEventListener("touchstart", handleInput, { once: true });
+  // document.addEventListener("touchend", handleInput, { once: true });
+
+
+
 }
 
+
+/**
+ * 
+ * @param {KeyboardEvent | TouchEvent} e 
+ * @returns 
+ */
 async function handleInput (e) {
-  switch (e.key) {
-    case "ArrowUp":
+
+    // let touchStartX = 0;
+    // let touchEndX = 0;
+    // let touchStartY = 0;
+    // let touchEndY = 0;
+    let direction; 
+
+
+  // keyboard event 
+  if (e.type === "keydown") {
+    direction =
+      e.key === "ArrowUp"
+        ? UP
+        : e.key === "ArrowDown"
+        ? DOWN
+        : e.key === "ArrowRight"
+        ? RIGHT
+        : e.key === "ArrowLeft" && LEFT;
+  }
+
+
+  // // swipe start event  
+  // if (e.type === 'touchstart') {
+  //   touchStartX = e.changedTouches[0].screenX; 
+  //   touchStartY = e.changedTouches[0].screenY; 
+  //   console.log(touchStartX)
+  // }
+
+  // // swipe end event
+  // if (e.type === 'touchend') {
+  //   touchEndX = e.changedTouches[0].screenX;
+  //   touchEndY = e.changedTouches[0].screenY; 
+  //   console.log(touchStartX)
+  //   direction = calcSwipeDirection({touchStartX, touchEndX, touchStartY, touchEndY});
+  // }
+
+
+  switch (direction) {
+    case UP:
       if (!canMoveUp()) return setupInput();
       await moveUp();
       break;
-    case "ArrowDown":
+    case DOWN:
       if (!canMoveDown()) return setupInput();
       await moveDown();
       break;
-    case "ArrowRight":
+    case RIGHT:
       if (!canMoveRight()) return setupInput();
       await moveRight();
       break;
-    case "ArrowLeft":
+    case LEFT:
       if (!canMoveLeft()) return setupInput();
       await moveLeft();
       break;
@@ -42,7 +99,7 @@ async function handleInput (e) {
 
     // update score on successful merge
     if (mergeSuccess) {
-      grid.updateScore(cell.tile.value);
+      grid.updateScore(grid.score + cell.tile.value);
     }
   });
   
@@ -56,9 +113,6 @@ async function handleInput (e) {
       // reset game 
       grid.reset();
   
-      // generate random two new tiles
-      grid.randomEmptyCell().tile = new Tile();
-      grid.randomEmptyCell().tile = new Tile();
       return alert('game over');
     })
   }
@@ -149,5 +203,3 @@ function canMove (cells) {
       });
     });
 }
-
-

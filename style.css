@@ -57,14 +57,19 @@ body {
 }
 
 
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 #score-container {
     display: flex; 
-    justify-content: flex-end;
     gap: 2vmin;
     margin-bottom: 2vmin;
 }
 
-#score {
+#score-container > div {
     background-color: #fff; 
     max-width: max-content;
     padding: 1vmin 5vmin;
@@ -77,8 +82,21 @@ body {
     text-transform: uppercase;
 }
 
-#score > .score-count, #score > .best-score-count {
+#score-count, #best-score-count {
     color: #000; 
     font-weight: 600;
     font-size: 5vmin;
+}
+
+#restart {
+    padding: 2vmin 4vmin;
+    background-color: #fff;
+    text-transform: uppercase;
+    border-radius: 1vmin;
+    font-size: 3vmin;
+    font-weight: 500;
+}
+
+#restart:hover {
+    cursor: pointer;
 }

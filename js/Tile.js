@@ -1,4 +1,4 @@
-import { gameBoard } from "./config.js";
+import { gameBoard } from "./utils/config.js";
 
 export default class Tile {
   #tileElement;
