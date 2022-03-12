@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #333;
+    height: 100vh; 
+    padding: 10px;   
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    font-size: 7.5vmin;
+}
+
+#game-board {
+    background-color: #ccc; 
+    display: grid;
+    grid-template-columns: repeat(var(--grid-size), var(--cell-size));  
+    grid-template-rows:  repeat(var(--grid-size), var(--cell-size));  
+    gap: var(--cell-gap); 
+    padding: var(--cell-gap);
+    border-radius: 1vmin ;
+    position: relative;
+} 
+
+
+.cell {
+    background-color: #aaa; 
+    border-radius: 1vmin;
+}
+
+.tile {
+    position: absolute;  
+    top: calc(var(--y) * var(--cell-size) + (var(--y) + 1) * var(--cell-gap));
+    left: calc(var(--x) * var(--cell-size) + (var(--x) + 1) * var(--cell-gap));
+    width: var(--cell-size); 
+    height: var(--cell-size); 
+    display: grid; 
+    place-content: center; 
+    border-radius: 1vmin;  
+    background-color: hsl(200, 50%, var(--background-lightness));
+    color: hsl(200, 25%, var(--text-lightness)) ;
+    font-weight: bold; 
+    animation: show 200ms ease-in-out; 
+    transition: 100ms ease-in-out;
+}
+
+
+@keyframes show {
+    0% {
+        opacity: 0; 
+        transform: scale(0);
+    }
+}
+
+
+#score-container {
+    display: flex; 
+    justify-content: flex-end;
+    gap: 2vmin;
+    margin-bottom: 2vmin;
+}
+
+#score {
+    background-color: #fff; 
+    max-width: max-content;
+    padding: 1vmin 5vmin;
+    border-radius: 1vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 2vmin;
+    color: #aaa;
+    text-transform: uppercase;
+}
+
+#score > .score-count, #score > .best-score-count {
+    color: #000; 
+    font-weight: 600;
+    font-size: 5vmin;
+}
