@@ -1,9 +1,13 @@
 import Grid from "./Grid.js";
 import Tile from "./Tile.js";
 import calcSwipeDirection from "./utils/calcSwipeDirection.js";
-import { DOWN, LEFT, resetBtn, RIGHT, UP } from "./utils/config.js";
+import { DOWN, header, LEFT, resetBtn, RIGHT, UP } from "./utils/config.js";
 
+// create grid instance 
 const grid = new Grid();
+
+// show header section after grid is created 
+header.classList.remove('hidden');
 
 // generate random two tiles on empty cells
 grid.randomEmptyCell().tile = new Tile();

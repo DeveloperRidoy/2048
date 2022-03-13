@@ -100,3 +100,8 @@ header {
 #restart:hover {
     cursor: pointer;
 }
+
+
+.hidden {
+    display: none;
+}
