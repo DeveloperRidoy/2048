@@ -19,28 +19,36 @@ resetBtn.addEventListener('click', () => {
 setupInput();
 function setupInput () {
 
+  // handle keyboard input 
   document.addEventListener("keydown", handleInput, { once: true });
-  // document.addEventListener("touchstart", handleInput, { once: true });
-  // document.addEventListener("touchend", handleInput, { once: true });
+  
+  // handle swipe input
+  document.addEventListener("touchstart", (e) => {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0; 
+    let touchEndY = 0;
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
 
-
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY; 
+      const swipeDir = calcSwipeDirection({ touchStartX, touchEndX, touchStartY, touchEndY });
+      handleInput(e, swipeDir);
+    }, {once: true})
+  }, {once: true});
 
 }
 
 
 /**
- * 
  * @param {KeyboardEvent | TouchEvent} e 
  * @returns 
  */
-async function handleInput (e) {
+async function handleInput (e, swipeDir) {
 
-    // let touchStartX = 0;
-    // let touchEndX = 0;
-    // let touchStartY = 0;
-    // let touchEndY = 0;
-    let direction; 
-
+  let direction; 
 
   // keyboard event 
   if (e.type === "keydown") {
@@ -54,21 +62,8 @@ async function handleInput (e) {
         : e.key === "ArrowLeft" && LEFT;
   }
 
-
-  // // swipe start event  
-  // if (e.type === 'touchstart') {
-  //   touchStartX = e.changedTouches[0].screenX; 
-  //   touchStartY = e.changedTouches[0].screenY; 
-  //   console.log(touchStartX)
-  // }
-
-  // // swipe end event
-  // if (e.type === 'touchend') {
-  //   touchEndX = e.changedTouches[0].screenX;
-  //   touchEndY = e.changedTouches[0].screenY; 
-  //   console.log(touchStartX)
-  //   direction = calcSwipeDirection({touchStartX, touchEndX, touchStartY, touchEndY});
-  // }
+  // swipe event
+  if (e.type === 'touchend') direction = swipeDir;
 
 
   switch (direction) {
