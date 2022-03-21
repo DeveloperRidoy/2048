@@ -114,10 +114,12 @@ async function handleInput(e, swipeDir) {
   // check for game over
   if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
     newTile.waitForTransition(true).then(() => {
+      
+      alert(`game over. Your score is ${grid.score}`);
       // reset game
       grid.reset();
-
-      return alert(`game over. Your score is ${grid.score}`);
+      return;
+      
     });
   }
 
