@@ -3,58 +3,64 @@ import Tile from "./Tile.js";
 import calcSwipeDirection from "./utils/calcSwipeDirection.js";
 import { DOWN, header, LEFT, resetBtn, RIGHT, UP } from "./utils/config.js";
 
-// create grid instance 
+// create grid instance
 const grid = new Grid();
 
-// show header section after grid is created 
-header.classList.remove('hidden');
+// show header section after grid is created
+header.classList.remove("hidden");
 
 // generate random two tiles on empty cells
 grid.randomEmptyCell().tile = new Tile();
 grid.randomEmptyCell().tile = new Tile();
 
-
 // restart game on clicking restart button
-resetBtn.addEventListener('click', () => {
+resetBtn.addEventListener("click", () => {
   grid.reset();
 });
 
-// user input 
+// user input
 setupInput();
-function setupInput () {
-
-  // handle keyboard input 
+function setupInput() {
+  // handle keyboard input
   document.addEventListener("keydown", handleInput, { once: true });
-  
+
   // handle swipe input
-  document.addEventListener("touchstart", (e) => {
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchEndX = 0; 
-    let touchEndY = 0;
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-
-    document.addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      touchEndY = e.changedTouches[0].screenY; 
-      const swipeDir = calcSwipeDirection({ touchStartX, touchEndX, touchStartY, touchEndY });
-      handleInput(e, swipeDir);
-    }, {once: true})
-  }, {once: true});
-
+  document.addEventListener("touchstart", handleSwipeInput, { once: true });
 }
 
+function handleSwipeInput(e) {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+
+  document.addEventListener(
+    "touchend",
+    (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      const swipeDir = calcSwipeDirection({
+        touchStartX,
+        touchEndX,
+        touchStartY,
+        touchEndY,
+      });
+      handleInput(e, swipeDir);
+    },
+    { once: true }
+  );
+}
 
 /**
- * @param {KeyboardEvent | TouchEvent} e 
- * @returns 
+ * @param {KeyboardEvent | TouchEvent} e
+ * @returns
  */
-async function handleInput (e, swipeDir) {
+async function handleInput(e, swipeDir) {
+  let direction;
 
-  let direction; 
-
-  // keyboard event 
+  // keyboard event
   if (e.type === "keydown") {
     direction =
       e.key === "ArrowUp"
@@ -67,8 +73,7 @@ async function handleInput (e, swipeDir) {
   }
 
   // swipe event
-  if (e.type === 'touchend') direction = swipeDir;
-
+  if (e.type === "touchend") direction = swipeDir;
 
   switch (direction) {
     case UP:
@@ -101,40 +106,38 @@ async function handleInput (e, swipeDir) {
       grid.updateScore(grid.score + cell.tile.value);
     }
   });
-  
+
   // add a new tile
   const newTile = new Tile();
   grid.randomEmptyCell().tile = newTile;
 
-  // check for game over 
+  // check for game over
   if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
     newTile.waitForTransition(true).then(() => {
-      // reset game 
+      // reset game
       grid.reset();
-  
-      return alert('game over');
-    })
+
+      return alert(`game over. Your score is ${grid.score}`);
+    });
   }
 
   setupInput();
 }
 
-function moveUp () {
+function moveUp() {
   return slideTiles(grid.cellsByColumn);
 }
 
-function moveDown () {
-  return slideTiles(grid.cellsByColumn.map(column => [...column].reverse()));
+function moveDown() {
+  return slideTiles(grid.cellsByColumn.map((column) => [...column].reverse()));
 }
 
-function moveLeft () {
-    return slideTiles(grid.cellsByRow);
+function moveLeft() {
+  return slideTiles(grid.cellsByRow);
 }
 
-function moveRight () {
-    return slideTiles(
-      grid.cellsByRow.map((row) => [...row].reverse())
-    );
+function moveRight() {
+  return slideTiles(grid.cellsByRow.map((row) => [...row].reverse()));
 }
 
 function slideTiles(cells) {
@@ -154,9 +157,9 @@ function slideTiles(cells) {
         }
 
         if (lastMovableCell == null) continue;
-        
+
         promises.push(cell.tile.waitForTransition());
-        
+
         if (lastMovableCell.tile != null) {
           lastMovableCell.mergeTile = cell.tile;
         } else {
@@ -173,32 +176,32 @@ function slideTiles(cells) {
 
 const canMoveUp = () => {
   return canMove(grid.cellsByColumn);
-}
+};
 
 const canMoveDown = () => {
-  return canMove(grid.cellsByColumn.map(column => [...column].reverse()));
+  return canMove(grid.cellsByColumn.map((column) => [...column].reverse()));
 };
 
 const canMoveLeft = () => {
-  return canMove(grid.cellsByRow)
+  return canMove(grid.cellsByRow);
 };
 
 const canMoveRight = () => {
-  return canMove(grid.cellsByRow.map(row => [...row].reverse()));
+  return canMove(grid.cellsByRow.map((row) => [...row].reverse()));
 };
-
 
 /**
  * @param {array} cells - takes array of columns or rows containing cells
  * @returns Boolean - returns boolean indicating whether canMove or not
  */
-function canMove (cells) {
+function canMove(cells) {
   return cells.some((group) => {
-      return group.some((cell, i) => {
-        if (i === 0) return false;
-        if (cell.tile == null) return false;
-        const moveToCell = group[i - 1];
-        return moveToCell.canAccept(cell.tile);
-      });
+    return group.some((cell, i) => {
+      if (i === 0) return false;
+      if (cell.tile == null) return false;
+      const moveToCell = group[i - 1];
+      return moveToCell.canAccept(cell.tile);
     });
+  });
 }
+
